@@ -60,6 +60,30 @@ class Lexer():
 
             if self.current_char == '"':
                 return self.string()
+            
+            if self.current_char == '+':
+                self.advance()
+                return Token(TokenType.PLUS, '+')
+
+            if self.current_char == '-':
+                self.advance()
+                return Token(TokenType.MINUS, '-')
+
+            if self.current_char == '*':
+                self.advance()
+                return Token(TokenType.STAR, '*')
+
+            if self.current_char == '/':
+                self.advance()
+                return Token(TokenType.SLASH, '/')
+
+            if self.current_char == '(':
+                self.advance()
+                return Token(TokenType.LPAREN, '(')
+
+            if self.current_char == ')':
+                self.advance()
+                return Token(TokenType.RPAREN, ')')
 
             # Unknown character
             self.error("Unexpected character")
