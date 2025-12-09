@@ -120,6 +120,37 @@ class StringNode(ASTNode):
     def _pretty_label(self):
         return f'String("{self.value}")'
 
+# ============================
+# BinaryOp Node
+# ============================
+
+class BinaryOpNode(ASTNode):
+    def __init__(self, left, operator_token, right):
+        self.left = left
+        self.operator = operator_token 
+        self.right = right
+
+    def __repr__(self):
+        return f"BinaryOpNode({self.left}, {self.operator}, {self.right})"
+
+    def _pretty_label(self):
+        # Show operator lexeme, not TokenType
+        return f"BinaryOp(op='{self.operator.value}')"
+
+    def pretty(self, indent=0, is_last=True):
+        pad = " " * indent
+        branch = "└── " if is_last else "├── "
+
+        # Print this node
+        result = f"{pad}{branch}{self._pretty_label()}\n"
+
+        # Left child (not last)
+        result += self.left.pretty(indent + 4, is_last=False)
+
+        # Right child (last)
+        result += self.right.pretty(indent + 4, is_last=True)
+
+        return result
 
 # ============================
 # Identifier Node

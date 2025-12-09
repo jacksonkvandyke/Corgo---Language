@@ -84,7 +84,7 @@ class Parser:
     # ============================
     # Expressions: NUMBER | STRING | IDENTIFIER
     # ============================
-    def parse_expression(self):
+    def parse_primary(self):
         token = self.current_token
 
         if token.type == TokenType.NUMBER:
@@ -99,4 +99,38 @@ class Parser:
             self.eat(TokenType.IDENTIFIER)
             return IdentifierNode(token.value)
 
+        if token.type == TokenType.LPAREN:
+            self.eat(TokenType.LPAREN)
+            expr = self.parse_expression()
+            self.eat(TokenType.RPAREN)
+            return expr
+        
         self.error(f"Unexpected token in expression: {token.type}")
+        
+    # ============================
+    # Parse Expression
+    # ============================
+    def parse_expression(self):
+        node = self.parse_term()
+
+        while self.current_token.type in (TokenType.PLUS, TokenType.MINUS):
+            op = self.current_token
+            self.eat(op.type)
+            right = self.parse_term()
+            node = BinaryOpNode(node, op, right)
+
+        return node
+    
+    # ============================
+    # Parse Term
+    # ============================
+    def parse_term(self):
+        node = self.parse_primary()
+
+        while self.current_token.type in (TokenType.STAR, TokenType.SLASH):
+            op = self.current_token
+            self.eat(op.type)
+            right = self.parse_primary()
+            node = BinaryOpNode(node, op, right)
+
+        return node

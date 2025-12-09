@@ -1,3 +1,5 @@
+from Lexer.tokens import *
+
 class Interpreter:
     def __init__(self):
         # Variable environment
@@ -37,6 +39,26 @@ class Interpreter:
         value = self.visit(node.value)
         print(value)
         return value
+    
+    # ============================
+    # BinaryOp
+    # ============================
+    def visit_BinaryOpNode(self, node):
+        left = self.visit(node.left)
+        right = self.visit(node.right)
+        op_type = node.operator.type
+
+        if op_type == TokenType.PLUS:
+            return left + right
+        if op_type == TokenType.MINUS:
+            return left - right
+        if op_type == TokenType.STAR:
+            return left * right
+        if op_type == TokenType.SLASH:
+            return left / right
+
+        raise Exception(f"Unknown binary operator: {node.operator}")
+
 
     # ============================
     # Expressions
