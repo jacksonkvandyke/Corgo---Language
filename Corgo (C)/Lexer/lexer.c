@@ -11,6 +11,7 @@
 
 //MY Includes
 #include "lexer.h"
+#include "languages.h"
 
 
 ////Lexer Functions
@@ -57,6 +58,35 @@ int LexSkipWhitespace (struct Lexer *lexer) {
 }
 
 //Lex-IdentifierORKeyword - Get an identifier or keyword.
+Token LexIdentifierORKeyword (struct Lexer *lexer) {
+    //Get the start of this token
+    const char *tokenstart = lexer->source + lexer->pos;
+    int tokenlength = 0;
+    int line = lexer->line;
+    int column = lexer->column;
+
+    //Continue to advance the lexer until we find a valid token, or not.
+    while ((lexer->current_char != '\0') && isalpha(lexer->current_char)){
+        tokenlength += 1;
+        LexAdvance(lexer);
+    }
+
+    //Store the string using memcpy
+    char tokenbuffer[tokenlength + 1];
+    memcpy(tokenbuffer, tokenstart, tokenlength);
+    tokenbuffer[tokenlength] = '\0';
+
+    //Check if the string is a valid keyword
+
+    //Build identifier token and return
+    Token token;
+    token.type = IDENTIFIER;
+    token.start = tokenstart;
+    token.length = tokenlength;
+    token.line = line;
+    token.column = column;
+    return token;
+}
 
 
 //Lex-GetNextToken - Get the next token from source.
@@ -103,9 +133,9 @@ Token LexGetNextToken(struct Lexer *lexer) {
             return token;
         }
 
-        //Check for alpha characters
+        //Check for an identifier or keyword
         if (isalpha(lexer->current_char)) {
-
+            return LexIdentifierORKeyword(lexer);
         }
 
         ////TEST ADVANCE
@@ -120,15 +150,13 @@ int main(void) {
 
     lexer.source = "Test string value.\n";
     lexer.length = strlen(lexer.source);
+    lexer.language_pack = EnglishPack;
     lexer.pos = 0;
     lexer.current_char = lexer.source[lexer.pos];
     lexer.line = 0;
     lexer.column = 0;
 
-    while (lexer.current_char != '\0') {
-        Token token = LexGetNextToken(&lexer);
-        printf("%d", token.type);
-    }
+    printf(lexer.language_pack->name);
 
     return 0;
 }

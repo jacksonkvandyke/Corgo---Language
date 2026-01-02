@@ -10,7 +10,7 @@
 typedef struct Lexer {
     const char *source;
     int length;
-    const char *language_pack;
+    const Keyword *language_pack;
     int pos;
     char current_char;
     int line;

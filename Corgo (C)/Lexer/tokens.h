@@ -32,4 +32,9 @@ typedef struct Token {
     int column;
 } Token;
 
+typedef struct Keyword { 
+    const char *name; 
+    TokenType type; 
+} Keyword; 
+
 #endif
